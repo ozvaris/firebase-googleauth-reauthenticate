@@ -3,6 +3,7 @@ import {
   signInWithGoogle,
   signInWithAuthCredential,
   reauthenticate,
+  reauthenticate2,
 } from "../service/firebase";
 import AuthContext from "../store/auth-context";
 
@@ -32,12 +33,14 @@ const Login = (props) => {
     <div>
       <button
         className="button"
-        onClick={() =>
-          reauthenticate(
+        onClick={async () => {
+          const googleUser = await reauthenticate(
             authCtx.token1,
             localStorage.getItem("idToken" + props.usernum)
-          )
-        }
+          );
+
+          reauthenticate2(googleUser.credential);
+        }}
       >
         <i className="fab fa-google"></i>
         {localStorage.getItem("displayName" + props.usernum)

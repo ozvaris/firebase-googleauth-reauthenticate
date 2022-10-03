@@ -48,18 +48,19 @@ const signInWithAuthCredential = async () => {
         // This gives you a Google Access Token. You can use it to access the Google API.
         const credential = GoogleAuthProvider.credentialFromResult(result);
 
-        //const accessToken = credential.accessToken;
-
+        const accessToken = credential.accessToken;
         const idToken = credential.idToken;
         const { user } = result;
         //const idToken = result._tokenResponse.idToken;
 
         //console.log("idToken", result._tokenResponse.idToken);
         console.log("idToken", idToken);
+        console.log("accessToken", accessToken);
+        console.log("user", user);
 
         //const authCredential = AuthProvider.credentialFromResult(result);
 
-        return { user, credential, idToken };
+        return { user, credential, idToken, accessToken };
       })
       .catch((error) => {
         // Handle Errors here.
@@ -106,7 +107,7 @@ const reauthenticate = (user, idToken) => {
   const credential = GoogleAuthProvider.credential(idToken);
   console.log(credential.idToken);
   console.log("credintal ok");
-  signInWithCredential(auth, credential)
+  const googleUser = signInWithCredential(auth, credential)
     .then((result) => {
       //console.log("util.inspect(result)", result._tokenResponse.idToken);
       //console.log(util.inspect(result));
@@ -136,6 +137,38 @@ const reauthenticate = (user, idToken) => {
       //    GoogleAuthProvider.credentialFromError(error)
       // ...
     });
+
+  return googleUser;
+};
+
+const reauthenticate2 = (reauthCredintal) => {
+  const googleUser = signInWithCredential(auth, reauthCredintal)
+    .then((result) => {
+      // This gives you a Google Access Token. You can use it to access the Google API.
+      const credential = GoogleAuthProvider.credentialFromResult(result);
+      //const accessToken = credential.accessToken;
+
+      const idToken = credential.idToken;
+      //const idToken = result._tokenResponse.idToken;
+
+      //console.log("idToken", result._tokenResponse.idToken);
+      console.log("reauthenticate2-idToken---", idToken);
+
+      return { credential, idToken };
+    })
+    .catch((error) => {
+      // Handle Errors here.
+      // const errorCode = error.code
+      // const errorMessage = error.message
+      // The email of the user's account used.
+      // const {email} = error.customData
+      // The AuthCredential type that was used.
+      // const credential =
+      //    GoogleAuthProvider.credentialFromError(error)
+      // ...
+    });
+
+  return googleUser;
 };
 
 export {
@@ -145,4 +178,5 @@ export {
   signInWithAuthCredential,
   logout,
   reauthenticate,
+  reauthenticate2,
 };
